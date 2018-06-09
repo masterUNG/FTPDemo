@@ -6,11 +6,14 @@ import java.io.File;
 
 import com.kpbird.ftpdemo.R;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +28,7 @@ public class FtpUpload extends Activity implements OnClickListener {
 	static final String FTP_HOST= "ftp.androidthai.in.th";
 	
 	/*********  FTP USERNAME ***********/
-	static final String FTP_USER = "gate@android.in.th";
+	static final String FTP_USER = "gate@androidthai.in.th";
 	
 	/*********  FTP PASSWORD ***********/
 	static final String FTP_PASS  ="Abc12345";
@@ -53,23 +56,33 @@ public class FtpUpload extends Activity implements OnClickListener {
 			uri = data.getData();
 
 			pathString =  findPath(uri);
+			Log.d("9JuneV1", "Path = " + pathString);
+
+			/********** Pick file from sdcard *******/
+			File f = new File(pathString);
+
+			// Upload sdcard file
+			uploadFile(f);
 
 		}
 
 	}
 
 	private String findPath(Uri uri) {
+
+		String resultSting;
 		String[] strings = new String[]{MediaStore.Images.Media.DATA};
-		Cursor cursor = getContentResolver().query(this.uri, strings, null, null, null);
+		Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
 		if (cursor != null) {
+            cursor.moveToFirst();
             int i = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            pathString = cursor.getString(i);
+            resultSting = cursor.getString(i);
         } else {
-            pathString = this.uri.getPath();
+            resultSting = uri.getPath();
         }
 
-		Log.d("9JuneV1", "Path = " + pathString);
-		return null;
+
+		return resultSting;
 	}
 
 	public void onClick(View v) {
@@ -81,15 +94,16 @@ public class FtpUpload extends Activity implements OnClickListener {
 
 
 		
-    	/********** Pick file from sdcard *******/
-		//File f = new File("/sdcard/logo.png");
-		
-		// Upload sdcard file
-		//uploadFile(f);
+
 		
 	}
     
-    public void uploadFile(File fileName){
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	public void uploadFile(File fileName){
+
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+		StrictMode.setThreadPolicy(policy);
     	
     	
 		 FTPClient client = new FTPClient();
@@ -99,16 +113,17 @@ public class FtpUpload extends Activity implements OnClickListener {
 			client.connect(FTP_HOST,21);
 			client.login(FTP_USER, FTP_PASS);
 			client.setType(FTPClient.TYPE_BINARY);
-			client.changeDirectory("/upload/");
+//			client.changeDirectory("/member/");
+			client.changeDirectory("member");
 			
 			client.upload(fileName, new MyTransferListener());
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.d("9JuneV1", "e1 ==> " + e.toString());
 			try {
 				client.disconnect(true);	
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				Log.d("9JuneV1", "e2 ==> " + e.toString());
 			}
 		}
 		

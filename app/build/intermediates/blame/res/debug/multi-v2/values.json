@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/masterung/MyWorkSpace/UngTraining/FTPDemo/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/masterung/MyWorkSpace/UngTraining/FTPDemo/app/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "3,2",
+                        "startColumns": "4,4",
+                        "startOffsets": "132,55",
+                        "endColumns": "50,76",
+                        "endOffsets": "178,127"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,106",
+                        "endColumns": "50,76",
+                        "endOffsets": "101,178"
+                    }
+                }
+            ]
+        }
+    ]
+}
